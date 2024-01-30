@@ -6,10 +6,15 @@
 
 /** Show main list of all stories when click site name */
 
-function navAllStories(evt) {
-  console.debug("navAllStories", evt);
+async function navAllStories() {
+  console.debug("navAllStories");
   hidePageComponents();
-  putStoriesOnPage();
+
+  // fetch stories from API again to get newly posted stories after session started
+  await getAndShowStoriesOnStart();
+
+  console.log("Add Favorite Icons:");
+  addFavoriteIcons($allStoriesList);
 }
 
 $body.on("click", "#nav-all", navAllStories);
@@ -34,7 +39,15 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+/** When user clicks the Submit nav link, the submit story form should appear */
 
+function showSubmitStoryForm() {
+  hidePageComponents();
+  console.debug("showSubmitForm");
+  $submitForm.show();
+}
+
+$navSubmit.on("click", showSubmitStoryForm);
 /** Show story submit form on clicking story "submit" */
 
 function navSubmitStoryClick(evt) {
@@ -51,21 +64,24 @@ $navSubmitStory.on("click", navSubmitStoryClick);
 function navFavoritesClick(evt) {
   console.debug("navFavoritesClick", evt);
   hidePageComponents();
+  $favoriteStoriesList.show();
   putFavoritesListOnPage();
 }
 
-$body.on("click", "#nav-favorites", navFavoritesClick);
+$navFavorites.on("click", navFavoritesClick);
+
 
 /** Show My Stories on clicking "my stories" */
 
-function navMyStories(evt) {
-  console.debug("navMyStories", evt);
+
+function navMyStoriesClick(evt) {
   hidePageComponents();
+  console.debug("navMyStoriesClick", evt);
+  $myStoriesList.show();
   putUserStoriesOnPage();
-  $ownStories.show();
 }
 
-$body.on("click", "#nav-my-stories", navMyStories);
+$navMyStories.on("click", navMyStoriesClick);
 
 
 /** Hide everything but profile on click on "profile" */

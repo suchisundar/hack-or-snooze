@@ -18,7 +18,10 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 function generateStoryMarkup(story) {
+  console.debug("generateStoryMarkup", story);
   const hostName = story.getHostName();
+// if user is logged in, show favorites star icon
+  const showStar = Boolean(currentUser);
   return $(`
       <li id="${story.storyId}">
         <a href="${story.url}" target="a_blank" class="story-link">
@@ -42,10 +45,33 @@ function putStoriesOnPage() {
     const $story = generateStoryMarkup(story);
     $allStoriesList.append($story);
   }
+// vary styles for logged in vs logged out users
+  if (currentUser) {
+    $allStoriesList.removeClass("logged-out");
+    // addFavoriteIcons($allStoriesList);
+} else {
+    $allStoriesList.addClass("logged-out");
+}
 
-  addFavoriteIcons($allStoriesList); // Add this line
+  addFavoriteIcons($allStoriesList); // Add 'star' icons to a list of stories
 
   $allStoriesList.show();
+}
+
+/** Gets list of favorite stories from user, generates their HTML, and puts on page. */
+
+function putFavoriteStoriesOnPage() {
+  console.debug("putFavoriteStoriesOnPage");
+
+  $favoriteStoriesList.empty();
+
+  // loop through all of the user's favortie stories and generate HTML for them
+  for (let story of currentUser.favorites) {
+      const $story = generateStoryMarkup(story);
+      $favoriteStoriesList.append($story);
+  }
+
+  addFavoriteIcons($favoriteStoriesList);
 }
 
 /** Handle submitting new story form. */

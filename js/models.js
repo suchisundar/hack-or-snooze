@@ -72,20 +72,32 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory(user, { title, author, url }) {
-    const token = user.loginToken;
-    const response = await axios({
-      method: "POST",
-      url: `${BASE_URL}/stories`,
-      data: { token, story: { title, author, url } },
+  async addStory(user, newStory) {
+    // newStory is an object: {title , author, url}
+
+    // post to the /stories endpoint to add a story (requires auth token)
+    // this will give us storyID, username and created at.
+    const response = await axios.post(`${BASE_URL}/stories`, {
+        token: user.loginToken,
+        story: { author: newStory.author, title: newStory.title, url: newStory.url },
     });
 
-    const story = new Story(response.data.story);
-    this.stories.unshift(story);
-    user.ownStories.unshift(story);
+    // create a new story instance
+    const newStoryInstance = new Story({
+        storyId: response.data.story.storyId,
+        title: response.data.story.title,
+        author: response.data.story.author,
+        url: response.data.story.url,
+        username: response.data.story.username,
+        createdAt: response.data.story.createdAt,
+    });
 
-    return story;
-  }
+    // add the new story to the story list
+    // console.log(this.stories);
+    this.stories.push(newStoryInstance);
+
+    return newStoryInstance;
+}
 
   /** Delete story from API and remove from the story lists.
    *
