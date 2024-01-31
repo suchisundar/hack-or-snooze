@@ -70,6 +70,25 @@
     <hr>
   </form>
 
+   <!-- edit story form -->
+   <form action="" class="hidden" id="edit-form" style="display: none">
+    <h3>Edit Story</h3>
+    <div>
+        <label for="edit-author">author</label>
+        <input id="edit-author" required="" placeholder="author name" />
+    </div>
+    <div>
+        <label for="edit-title">title</label>
+        <input id="edit-title" required="" placeholder="story title" />
+    </div>
+    <div>
+        <label for="edit-url">url</label>
+        <input id="edit-url" required="" type="url" placeholder="story url" />
+    </div>
+    <button type="submit">submit</button>
+    <hr />
+</form>
+
 
   <!-- loading message (removed by JS after stories loaded) -->
   <div id="stories-loading-msg">Loading&hellip;</div>

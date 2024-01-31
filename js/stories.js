@@ -97,13 +97,22 @@ async function addStory(event) {
 $submitForm.on("submit", addStory);
 
 //function to delete stories
-async function deleteStory(e) {
-  e.preventDefault();
-  const target = e.currentTarget;
-  const storyId = target.closest("li").id;
+async function deleteStory() {
+  // get the story id associated with the icon
+  const storyId = $(this).parent().parent().attr("id");
 
-  await Story.deleteStory(storyId);
-  target.closest("li").remove(); // Add parentheses
+  console.debug("deleteStory");
+  console.debug($(this));
+  console.debug($(this).parent().attr("id"));
+
+  // delete the story via API & remove it from the user's stories list
+  await currentUser.deleteStory(storyId);
+
+  // refresh the story list so that stories are removed if the user navigates to all stories.
+  storyList = await StoryList.getStories();
+
+  // refresh the stories list HTML:
+  putUserStoriesOnPage();
 }
 
 /* Add 'star' icons to a list of stories so that the user can favorite/unfavorite stories */
