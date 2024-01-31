@@ -57,7 +57,6 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
-
 /** Gets list of favorite stories from user, generates their HTML, and puts on page. */
 
 function putFavoriteStoriesOnPage() {
@@ -74,13 +73,14 @@ function putFavoriteStoriesOnPage() {
   addFavoriteIcons($favoriteStoriesList);
 }
 
+
 /** Handle submitting new story form. */
 async function addStory(event) {
   event.preventDefault();
 
-  const author = $("#create-author").val();
-  const title = $("#create-title").val();
-  const url = $("#create-url").val();
+  const author = $("#story-author").val();
+  const title = $("#story-title").val();
+  const url = $("#story-url").val();
 
   // Add story via API
   let newStory = await storyList.addStory(currentUser, { title, author, url });
@@ -152,20 +152,26 @@ async function toggleFavorite() {
   // get the story id associated with the icon
   const storyId = $(this).parent().parent().attr("id");
 
-  // if the story is one of the user's favorites:
-  if (storyIsFavorite(storyId)) {
-    // remove the favorite via API and client
-    await currentUser.removeFavorite(storyId);
+  try {
+    // if the story is one of the user's favorites:
+    if (storyIsFavorite(storyId)) {
+      // remove the favorite via API and client
+      await currentUser.removeFavorite(storyId);
 
-    // empty the star icon
-    $(this).addClass("far").removeClass("fas");
-  } else {
-    // else if the story isn't one of the user's favorites,
-    // add the favorite via API and client
-    await currentUser.addFavorite(storyId, storyList);
+      // empty the star icon
+      $(this).addClass("far").removeClass("fas");
+    } else {
+      // else if the story isn't one of the user's favorites,
+      // add the favorite via API and client
+     const story = storyList.stories.find (story => story.storyId === storyId);
+      await currentUser.addFavorite(story);
 
-    // fill the star icon
-    $(this).addClass("fas").removeClass("far");
+      // fill the star icon
+      $(this).addClass("fas").removeClass("far");
+    }
+  } catch (error) {
+    // Handle error appropriately (e.g., log, show a user-friendly message)
+    console.error("Error toggling favorite:", error);
   }
 }
 
@@ -216,9 +222,9 @@ function addPencilIcons() {
   // loop through all of the user's stories and generate 'pencil' icons
   for (let story of $myStoriesList.children()) {
     const $story = $(story);
-
+    console.log ($story)
     // create pencil icon and span
-    const pencilIcon = $("<i>").addClass("fas fa-pencil");
+    const pencilIcon = $("<i>").addClass("fas fa-pencil-alt");
     const pencilSpan = $("<span>").addClass("pencil");
 
     // add click listener for the pencil icon:
@@ -297,28 +303,27 @@ function putUserStoriesOnPage() {
 }
 
 // handle loading more stories (infinite scroll)
-async function loadMoreStories() {
-  try {
-    // Load more stories from the API
-    const newStories = await storyList.loadMoreStories();
+// async function loadMoreStories() {
+//   try {
+//     // Load more stories from the API
+//     const newStories = await storyList.loadMoreStories();
 
-    // If there are new stories, update the UI
-    if (newStories.length > 0) {
-      for (let story of newStories) {
-        const $story = generateStoryMarkup(story);
-        $allStoriesList.append($story);
-      }
-    }
-  } catch (error) {
-    // Handle errors while loading more stories
-    console.error("Error loading more stories:", error);
-  }
-}
+//     // If there are new stories, update the UI
+//     if (newStories.length > 0) {
+//       for (let story of newStories) {
+//         const $story = generateStoryMarkup(story);
+//         $allStoriesList.append($story);
+//       }
+//     }
+//   } catch (error) {
+//     // Handle errors while loading more stories
+//     console.error("Error loading more stories:", error);
+//   }
+// }
 
-// Add a scroll event listener to implement infinite scroll
-$(window).on("scroll", function () {
-  if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-    loadMoreStories();
-  }
-});
-
+// // Add a scroll event listener to implement infinite scroll
+// $(window).on("scroll", function () {
+//   if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+//     loadMoreStories();
+//   }
+// });

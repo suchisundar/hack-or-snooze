@@ -13,12 +13,26 @@ async function navAllStories() {
   // fetch stories from API again to get newly posted stories after session started
   await getAndShowStoriesOnStart();
 
-  console.log("Add Favorite Icons:");
-  addFavoriteIcons($allStoriesList);
+
 }
 
 $body.on("click", "#nav-all", navAllStories);
 
+/** Gets list of favorite stories from user, generates their HTML, and puts on page. */
+
+function putFavoritesListOnPage() {
+  console.debug("putFavoritesListOnPage");
+
+  $favoriteStoriesList.empty();
+
+  // loop through all of the user's favortie stories and generate HTML for them
+  for (let story of currentUser.favorites) {
+      const $story = generateStoryMarkup(story);
+      $favoriteStoriesList.append($story);
+  }
+  $favoriteStoriesList.show();
+    addFavoriteIcons($favoriteStoriesList);
+}
 /** Show login/signup on click on "login" */
 
 function navLoginClick(evt) {
@@ -47,7 +61,7 @@ function showSubmitStoryForm() {
   $submitForm.show();
 }
 
-$navSubmit.on("click", showSubmitStoryForm);
+$navSubmitStory.on("click", showSubmitStoryForm);
 /** Show story submit form on clicking story "submit" */
 
 function navSubmitStoryClick(evt) {

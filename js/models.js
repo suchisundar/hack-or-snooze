@@ -244,16 +244,16 @@ class User {
 
   async addFavorite(story) {
     this.favorites.push(story);
-    await this._addOrRemoveFavorite("add", story)
+    await this._addOrRemoveFavorite("add", story.storyId)
   }
 
   /** Remove a story to the list of user favorites and update the API
    * - story: the Story instance to remove from favorites
    */
 
-  async removeFavorite(story) {
-    this.favorites = this.favorites.filter(s => s.storyId !== story.storyId);
-    await this._addOrRemoveFavorite("remove", story);
+  async removeFavorite(storyId) {
+    this.favorites = this.favorites.filter(s => s.storyId !== storyId);
+    await this._addOrRemoveFavorite("remove", storyId);
   }
 
   /** Update API with favorite/not-favorite.
@@ -261,11 +261,11 @@ class User {
    *   - story: Story instance to make favorite / not favorite
    * */
 
-  async _addOrRemoveFavorite(newState, story) {
+  async _addOrRemoveFavorite(newState, storyId) {
     const method = newState === "add" ? "POST" : "DELETE";
     const token = this.loginToken;
     await axios({
-      url: `${BASE_URL}/users/${this.username}/favorites/${story.storyId}`,
+      url: `${BASE_URL}/users/${this.username}/favorites/${storyId}`,
       method: method,
       data: { token },
     });

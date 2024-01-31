@@ -21,6 +21,8 @@ const $navLogOut = $("#nav-logout");
 const $navSubmitStory = $("#nav-submit-story");
 const $navFavorites = $("#nav-favorites");
 const $navMyStories = $("#nav-my-stories");
+const $storiesContainer = $("#stories-container");
+
 
 /** To make it easier for individual components to show just themselves, this
  * is a useful function that hides pretty much everything on the page. After
