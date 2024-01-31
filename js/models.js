@@ -270,10 +270,61 @@ class User {
       data: { token },
     });
   }
-
   /** Return true/false if given Story instance is a favorite of this user. */
 
   isFavorite(story) {
     return this.favorites.some(s => (s.storyId === story.storyId));
   }
+
+  async deleteStory(storyId) {
+    console.debug("deleteStory Method");
+
+    const token = this.loginToken;
+    const idToRemove = storyId;
+
+    // Call API to delete one of user's stories
+    const response = await axios.delete(`${BASE_URL}/stories/${idToRemove}`, {
+        data: {
+            token,
+        },
+    });
+
+    console.log(response.data.message);
+
+    // Remove from this user's ownStories property
+    this.ownStories = this.ownStories.filter((story) => story.storyId !== idToRemove);
 }
+
+async editStory(storyId, storyData) {
+    // storyData is an object and contains the edited {author, title, url} from the form
+    console.debug("editStory Method");
+
+    const token = this.loginToken;
+    const idToEdit = storyId;
+
+    // Call API to delete one of user's stories
+    const response = await axios.patch(`${BASE_URL}/stories/${idToEdit}`, {
+        token,
+        story: storyData,
+    });
+
+        // create a new story instance for the edited story
+        const newStoryInstance = new Story({
+          storyId: response.data.story.storyId,
+          title: response.data.story.title,
+          author: response.data.story.author,
+          url: response.data.story.url,
+          username: response.data.story.username,
+          createdAt: response.data.story.createdAt,
+      });
+
+      // Replace story with edited version in user's ownStories property
+      this.ownStories = this.ownStories.filter((story) => story.storyId !== idToEdit);
+      this.ownStories.push(newStoryInstance);
+
+      // If story is also a favorite, update user's favorites property
+      this.favorites = this.favorites.filter((story) => story.storyId !== idToEdit);
+      this.favorites.push(newStoryInstance);
+  }
+}
+
