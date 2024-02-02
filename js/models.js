@@ -123,6 +123,7 @@ class StoryList {
 }
 
 
+
 /******************************************************************************
  * User: a user in the system (only used to represent the current user)
  */

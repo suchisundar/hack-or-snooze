@@ -289,6 +289,8 @@ async function editStory(event) {
 
   $editForm.hide();
   putUserStoriesOnPage();
+  addTrashIcons();
+  addPencilIcons();
 }
 
 // Add this line to handle submitting the edit story form
