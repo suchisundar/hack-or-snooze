@@ -282,15 +282,11 @@ async function editStory(event) {
   const storyId = $(this).attr("id");
 
   // Edit the story via API
-  let newStory = await currentUser.editStory(storyId, { title, author, url });
-
-  // Add the story to the current user's ownStories property
-  currentUser.ownStories.push(newStory);
+  await currentUser.editStory(storyId, { title, author, url });
 
   $editForm.hide();
   putUserStoriesOnPage();
-  addTrashIcons();
-  addPencilIcons();
+  
 }
 
 // Add this line to handle submitting the edit story form
@@ -301,7 +297,7 @@ function putUserStoriesOnPage() {
   console.debug("putUserStoriesOnPage");
 
   $myStoriesList.empty();
-
+ console.log("hello",currentUser.ownStories);
   // loop through each user story and generate HTML for them
   for (let story of currentUser.ownStories) {
     console.log(story);

@@ -34,9 +34,9 @@ class Story {
  */
 
 class StoryList {
-  constructor(stories) {
-    this.stories = stories;
-  }
+    constructor(stories) {
+        this.stories = stories;
+    }
 
   /** Generate a new StoryList. It:
    *
@@ -326,6 +326,8 @@ async editStory(storyId, storyData) {
       // If story is also a favorite, update user's favorites property
       this.favorites = this.favorites.filter((story) => story.storyId !== idToEdit);
       this.favorites.push(newStoryInstance);
+      console.log('Added sgosdfsadfsadf');
   }
+
 }
 
